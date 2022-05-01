@@ -1,0 +1,36 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Scripts/DebugMenu.gd" type="Script" id=1]
+
+[node name="DebugMenu" type="Control"]
+margin_right = 512.0
+margin_bottom = 288.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_right = 512.0
+margin_bottom = 288.0
+color = Color( 0.172549, 0.164706, 0.196078, 1 )
+
+[node name="ItemList" type="ItemList" parent="."]
+margin_top = 32.0
+margin_right = 256.0
+margin_bottom = 288.0
+auto_height = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="."]
+margin_right = 256.0
+margin_bottom = 32.0
+custom_colors/font_color = Color( 0.839216, 0.839216, 0.839216, 1 )
+text = "Debug Menu"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
