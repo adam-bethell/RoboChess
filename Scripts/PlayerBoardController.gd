@@ -17,6 +17,7 @@ func _ready():
 	$Matrix.connect("run_progs", self, "run_progs")
 	$PlayerBoardUI.connect("prog_played_from_hand", $Hand, "remove_prog")
 	$PlayerBoardUI.connect("prog_played_from_hand", self, "prog_played")
+	$PlayerBoardUI/Mulligan.connect("mulligan", self, "_on_mulligan")
 	$PlayerBoardUI.set_health_val(health)
 	
 func setup(deck, _health, _map_position, matrix_x, matrix_y, _ai):
@@ -29,6 +30,7 @@ func setup(deck, _health, _map_position, matrix_x, matrix_y, _ai):
 		ai.hand = $Hand
 		ai.matrix = $Matrix
 		is_human_player = false
+		ai.connect("turn_calculated", self, "ai_process_turn_data")
 	$PlayerBoardUI.setup(is_human_player)
 	# Player Info
 	map_position = _map_position
@@ -51,16 +53,16 @@ func draw_prog():
 
 func start_turn():
 	if not is_human_player:
-		var turn_data = ai.calculate_turn()
-		yield(get_tree().create_timer(0.4), "timeout")
-		if turn_data["prog"] != null:
-			$Hand.remove_prog(turn_data["prog"])
-			$PlayerBoardUI.remove_from_hand(turn_data["prog"])
-			turn_data["insert_target"].insert_progv(turn_data["prog"], turn_data["insert_point"])
-		emit_signal("run_progs", self, turn_data["run"])
-		
+		ai.calculate_turn()
 	else:
 		$PlayerBoardUI.set_insert_mode()
+	
+func ai_process_turn_data(data):
+	if data["prog"] != null:
+		$Hand.remove_prog(data["prog"])
+		$PlayerBoardUI.remove_from_hand(data["prog"])
+		data["insert_target"].insert_progv(data["prog"], data["insert_point"])
+	emit_signal("run_progs", self, data["run"])
 	
 func insert_progv(prog, insert_point):
 	$PlayerBoardUI/Board.insert_progv(prog, insert_point)
@@ -72,6 +74,14 @@ func prog_played(_prog):
 func run_progs(progs):
 	$PlayerBoardUI.set_idle_mode()
 	emit_signal("run_progs", self, progs)
+	
+func _on_mulligan():
+	for prog in $Hand.hand.duplicate():
+		$PlayerBoardUI.remove_from_hand(prog)
+		$Hand.remove_prog(prog)
+		$Heap.add_to_heap(prog)
+	$PlayerBoardUI.set_idle_mode()
+	emit_signal("run_progs", self, [])
 	
 func set_ui_visibility(val):
 	$PlayerBoardUI.visible = val

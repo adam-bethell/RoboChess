@@ -77,18 +77,21 @@ func set_health_val(val):
 	set_cell(10,0,get_tileset().find_tile_by_name(text[1]))
 
 func set_idle_mode():
+	$Mulligan.visible = false
 	$Board.visible = false
 	$Board.show_card_slots()
 	current_mode = IDLE
 	$RunIndicator.visible = false
 	
 func set_insert_mode():
+	$Mulligan.visible = true
 	$Board.visible = true
 	$Board.show_card_slots()
 	current_mode = INSERT
 	$RunIndicator.visible = false
 
 func set_run_mode():
+	$Mulligan.visible = false
 	$Board.show_run_starts()
 	current_mode = RUN
 	$RunIndicator.visible = true
@@ -151,6 +154,7 @@ func hide_hunan_player_ui():
 	$MatrixEntry1.visible = false
 	$MatrixEntry2.visible = false
 	$MatrixEntry3.visible = false
+	$Mulligan.visible = false
 	clear()
 	$PlayerBackground.visible = false
 	$NonPlayerBackground.visible = true

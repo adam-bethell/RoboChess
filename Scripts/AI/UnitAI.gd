@@ -1,5 +1,7 @@
 extends Node2D
 
+signal turn_calculated
+
 var map = null
 var turn_order = null
 var hand = null
@@ -10,16 +12,25 @@ var human_player = null
 var test_player = {}
 var test_human_player = {}
 
+var calculations_complete = false
+var options = []
+var ran_options = []
+
+func _ready():
+	set_process(false)
+
 func calculate_options():
 	# Get all turn options
-	var options = options_get()
-	options = option_remove_duplicates(options)
-	options = options_run(options)
-	return options
+	options = []
+	ran_options = []
+	options_get()
+	option_remove_duplicates()
+	set_process(true)
+
+func _process(_delta):
+	options_run(10)
 	
 func options_get():
-	var options = []
-	
 	var cards = hand.hand
 	if cards.size() == 0:
 		cards = [null]
@@ -40,6 +51,9 @@ func options_get():
 					"run": test_matrix.get_run(run_insert_point),
 					"dropped_prog": dropped_prog,
 					"prog_count_by_type": prog_count_by_type,
+					"movement_towards_human": 0,
+					"damage_taken": 0,
+					"damage_given": 0,
 				}
 				options.push_back(option)
 			
@@ -60,6 +74,9 @@ func options_get():
 					"run": matrix.get_run(run_insert_point),
 					"dropped_prog": dropped_prog,
 					"prog_count_by_type": prog_count_by_type,
+					"movement_towards_human": 0,
+					"damage_taken": 0,
+					"damage_given": 0,
 				}
 				options.push_back(option)
 				
@@ -67,7 +84,7 @@ func options_get():
 	
 	return options
 
-func option_remove_duplicates(options):
+func option_remove_duplicates():
 	var updated_options = []
 	updated_options.push_back(options.pop_front())
 	
@@ -81,14 +98,19 @@ func option_remove_duplicates(options):
 		if not collision_found:
 			updated_options.push_back(option)
 	
-	return updated_options
+	options = updated_options
 			
 	
-func options_run(options):
+func options_run(count):
 	var start_distance_from_human = map.get_distance(player.map_position, human_player.map_position)
-	var updated_options = []
 	
-	for option in options:
+	for _i in range(count):
+		var option = options.pop_front()
+		if option == null:
+			options = ran_options
+			calculations_complete = true
+			return
+			
 		var test_map = map.duplicate(4)
 		test_map.connect("player_hit", self, "test_map_hit_player")
 		setup_test_players()
@@ -98,11 +120,9 @@ func options_run(options):
 		option["movement_towards_human"] = start_distance_from_human - distance
 		option["damage_taken"] = player.health - test_player.health
 		option["damage_given"] = human_player.health - test_human_player.health
-		updated_options.push_back(option)
+		ran_options.push_back(option)
 		test_map.queue_free()
-		
-	return updated_options
-	
+
 func setup_test_players():
 	test_player.map_position = player.map_position
 	test_player.health = player.health

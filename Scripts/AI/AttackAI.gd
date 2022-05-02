@@ -1,8 +1,16 @@
 extends "res://Scripts/AI/UnitAI.gd"
-
-func calculate_turn():
-	var options = calculate_options()
 	
+func calculate_turn():
+	set_process(true)
+	calculate_options()
+
+func _process(_delta):
+	if calculations_complete:
+		score_options()
+		calculations_complete = false
+		set_process(false)
+	
+func score_options():
 	var scores = []
 	var highest_score = -9999
 	
@@ -22,5 +30,6 @@ func calculate_turn():
 	scores.shuffle()
 	for score in scores:
 		if score["score"] == highest_score:
-			return score["option"]
-		
+			emit_signal("turn_calculated", score["option"])
+			return
+	assert(false)
