@@ -4,12 +4,14 @@ signal player_clicked
 signal map_clicked
 signal player_hit
 signal run_progs_finished
+signal highlight_player_pos
 
 var width = 16
 var height = 13
 
 func _ready():
 	$Area2D.connect("input_event", self, "_on_input_event")
+	$Area2D.connect("mouse_exited", self, "_mouse_exited")
 	
 func setup(level_data):
 	for x in range(-1, width+1):
@@ -24,13 +26,16 @@ func get_player_map_positions():
 			if tile_id == -1:
 				continue
 			var player_tile = $TileMap.get_tileset().tile_get_name(tile_id)
-			if is_player_tile(player_tile):
+			if UnitData.is_unit_tile(player_tile):
 				var info = [player_tile, Vector2(x,y)]
 				player_positions.push_back(info)
 	
 	return player_positions
 
 func run_progs(player, progs, skip_animations = false):
+	if progs.size() == 0 && not skip_animations:
+		yield(get_tree().create_timer(0.2), "timeout")
+		
 	for prog in progs:
 		var player_tile_id = $TileMap.get_cellv(player.map_position)
 		assert(player_tile_id != -1)
@@ -63,13 +68,17 @@ func run_progs(player, progs, skip_animations = false):
 					continue
 				var player_tile = $TileMap.get_tileset().tile_get_name(tile_id)
 				
-				if is_player_tile(player_tile):
+				if UnitData.is_unit_tile(player_tile):
 					emit_signal("player_hit", attack_position)
 		
 		elif prog.type == CardData.Type.DEBUFF:
-			# Do nothing
-			pass
-			
+			if "dmg" in prog.keywords:
+				if not skip_animations:
+					$Overlays.set_cellv(player.map_position, $Overlays.get_tileset().find_tile_by_name(attack_tile_name))
+					yield(get_tree().create_timer(0.2), "timeout")
+					$Overlays.set_cellv(player.map_position, -1)
+					yield(get_tree().create_timer(0.2), "timeout")
+				emit_signal("player_hit", player.map_position)
 					
 	emit_signal("run_progs_finished")
 
@@ -78,25 +87,41 @@ func player_died(player):
 	var tile_id = $TileMap.get_cellv(pos)
 	assert(tile_id != -1)
 	var tile = $TileMap.get_tileset().tile_get_name(tile_id)
-	assert(is_player_tile(tile))
+	assert(UnitData.is_unit_tile(tile))
 	$TileMap.set_cellv(pos, -1)
-	
-func is_player_tile (tile):
-	if tile.substr(0, 7) == "Player ":
-		return true
-	return false
 
 func _on_input_event(_viewport, _event, _shape_idx):
+	var mouse_pos = get_global_mouse_position()
+	var map_pos = $TileMap.world_to_map(mouse_pos)
+	map_pos = map_pos + Vector2(-2, -3)
+	var tile_id = $TileMap.get_cellv(map_pos)
+	var is_player_tile = false
+	var tile_name = ""
+	if tile_id != -1:
+		tile_name = $TileMap.get_tileset().tile_get_name(tile_id)
+		is_player_tile = UnitData.is_unit_tile(tile_name)
+	
 	if Input.is_action_just_pressed("click"):
-		var mouse_pos = get_global_mouse_position()
-		var map_pos = $TileMap.world_to_map(mouse_pos)
-		map_pos = map_pos + Vector2(-2, -3)
-		var tile_id = $TileMap.get_cellv(map_pos)
-		if tile_id != -1 && is_player_tile($TileMap.get_tileset().tile_get_name(tile_id)):
+		if is_player_tile:
 			emit_signal("player_clicked", map_pos)
 		else:
 			emit_signal("map_clicked")
-			
+	else:
+		if is_player_tile:
+			highlight(map_pos)
+			emit_signal("highlight_player_pos", map_pos)
+			var unit_data = UnitData.find_unit_data_from_tile_name(tile_name)
+			Globals.emit_signal("info_bus", self, unit_data["name"])
+		else:
+			unhighlight_all()
+			emit_signal("highlight_player_pos", null)
+			Globals.emit_signal("info_bus", self, null)
+
+func _mouse_exited():
+	unhighlight_all()
+	emit_signal("highlight_player_pos", null)
+	Globals.emit_signal("info_bus", self, null)
+
 func get_distance(start, goal):
 	var route = get_route(start, goal)
 	if route == null:
@@ -161,4 +186,11 @@ func _frontier_get_lowest_priority(frontier: Array):
 	frontier.remove(index)
 	return out[0]
 	
+func unhighlight_all():
+	for cell in $Overlays.get_used_cells_by_id($Overlays.get_tileset().find_tile_by_name("Highlight")):
+		$Overlays.set_cellv(cell, -1)
+	
+func highlight (map_pos):
+	unhighlight_all()
+	$Overlays.set_cellv(map_pos, $Overlays.get_tileset().find_tile_by_name("Highlight"))
 	

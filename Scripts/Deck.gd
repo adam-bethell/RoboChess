@@ -10,7 +10,10 @@ func add_prog(prog):
 
 func shuffle():
 	deck.shuffle()
-	
+
+func get_size():
+	return deck.size()
+
 func draw():
 	var prog = deck.pop_front()
 	emit_signal("size_updated", deck.size())

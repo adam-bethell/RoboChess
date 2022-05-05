@@ -23,7 +23,7 @@ func load_level(index):
 	
 	current_level = Level.instance()
 	add_child(current_level)
-	var level_data = load(LevelData.levels[index]["map_data"]).instance()
+	var level_data = load(CampaignData.levels[index]["map_data"]).instance()
 	
 	var card_names = []
 	card_names.push_back("Move North")

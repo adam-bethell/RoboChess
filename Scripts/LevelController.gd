@@ -27,6 +27,9 @@ func setup(level_data, player_deck_data):
 	$Map.connect("player_hit", self, "_on_player_hit")
 	$Map.connect("run_progs_finished", self, "_on_turn_ended")
 	
+	$Map.connect("highlight_player_pos", self, "_on_player_pos_highlight")
+	$TurnOrder.connect("highlight_turn", self, "_on_turn_order_highlight")
+	
 	setup_turn_order()
 	current_player.start_turn()
 			
@@ -36,7 +39,7 @@ func setup_players(player_deck_data):
 		if data[0] == "Player Player":
 			human_player = Player.instance()
 			add_child(human_player)
-			human_player.setup(construct_deck(player_deck_data), 6, data[1], 4, 4, null)
+			human_player.setup(construct_deck(player_deck_data), 6, data[1], 4, 4, data[0], null)
 			human_player.connect("run_progs", $Map, "run_progs")
 			human_player.connect("player_died", $Map, "player_died")
 			human_player.connect("player_died", self, "_on_player_died")
@@ -44,7 +47,7 @@ func setup_players(player_deck_data):
 			
 	for data in $Map.get_player_map_positions():
 		if data[0] != "Player Player":
-			var unit_data = UnitData.unit_data[data[0]]
+			var unit_data = UnitData.find_unit_data_from_tile_name(data[0])
 			var player = Player.instance()
 			var ai = load(unit_data["ai"]).new()
 			ai.map = $Map
@@ -57,7 +60,8 @@ func setup_players(player_deck_data):
 				unit_data["health"], 
 				data[1], 
 				unit_data["matrix_width"], 
-				unit_data["matrix_height"], 
+				unit_data["matrix_height"],
+				data[0],
 				ai
 			)
 			player.connect("run_progs", $Map, "run_progs")
@@ -70,6 +74,7 @@ func setup_turn_order():
 		turn_order.push_back(e)
 	
 	current_player = turn_order.pop_front()
+	$TurnOrder.update_order(current_player, turn_order)
 	
 func get_chicken_test_deck():
 	var card_names = []
@@ -122,9 +127,9 @@ func _on_turn_ended():
 		turn_order.push_back(current_player)
 		current_player = turn_order.pop_front()
 		current_player.start_turn()
+		$TurnOrder.update_order(current_player, turn_order)
 
 func _on_player_died(player):
-	print("_on_player_died")
 	if player == human_player:
 		is_game_over = true
 	else:
@@ -132,3 +137,22 @@ func _on_player_died(player):
 		turn_order.erase(player)
 		if enemy_players.empty():
 			is_level_complete = true
+			
+func _on_turn_order_highlight(index):
+	if index == null:
+		$Map.unhighlight_all()
+	elif index == -1:
+		$Map.highlight(current_player.map_position)
+	elif index < turn_order.size():
+		$Map.highlight(turn_order[index].map_position)
+		
+func _on_player_pos_highlight(pos):
+	if pos == null:
+		$TurnOrder.unhighlight_all()
+	elif current_player.map_position == pos:
+		$TurnOrder.highlight(-1)
+	else:
+		for i in range(turn_order.size()):
+			var player = turn_order[i]
+			if player.map_position == pos:
+				$TurnOrder.highlight(i)

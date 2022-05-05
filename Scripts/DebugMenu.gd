@@ -4,7 +4,7 @@ signal load_level
 
 func _ready():
 	$ItemList.connect("item_activated", self, "load_level")
-	for level_data in LevelData.levels:
+	for level_data in CampaignData.levels:
 		$ItemList.add_item(level_data["name"])
 
 func load_level(index):

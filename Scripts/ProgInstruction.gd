@@ -1,21 +1,26 @@
 extends Node2D
 
+var description
 var type
 var direction
 var distance
-var debuff
+var keywords
 
 func setup(card_data):
+	description = card_data["description"]
 	type = card_data["type"]
 	direction = card_data["direction"]
 	distance = card_data["distance"]
-	debuff = card_data["debuff"]
+	keywords = card_data["keywords"]
 	
 	var tiles = card_data["tiles"]
 	$TileMap.set_cell(0,0,$TileMap.get_tileset().find_tile_by_name(tiles[0]))
 	$TileMap.set_cell(1,0,$TileMap.get_tileset().find_tile_by_name(tiles[1]))
 	$TileMap.set_cell(0,1,$TileMap.get_tileset().find_tile_by_name(tiles[2]))
 	$TileMap.set_cell(1,1,$TileMap.get_tileset().find_tile_by_name(tiles[3]))
+	
+	$Area2D.connect("mouse_entered", self, "identify")
+	$Area2D.connect("mouse_exited", self, "clear_info")
 	
 func direction_as_move_vector():
 	var move_vector = Vector2.ZERO
@@ -48,3 +53,8 @@ func direction_as_attack_vectors():
 			vectors.push_back(Vector2(i * -1, 0))
 
 	return vectors
+
+func identify():
+	Globals.emit_signal("info_bus", self, description)
+func clear_info():
+	Globals.emit_signal("info_bus", self, null)

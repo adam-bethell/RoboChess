@@ -94,6 +94,8 @@ func get_run(insert_point: Vector2):
 		var prog = matrix[position.x][position.y]
 		if prog != null:
 			progs.push_back(prog)
+			if "stop" in prog.keywords:
+				break
 		position = position + movement
 	
 	return progs

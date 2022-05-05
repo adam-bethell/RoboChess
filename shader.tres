@@ -6,7 +6,7 @@
 render_priority = -1
 shader = ExtResource( 1 )
 shader_param/overlay = true
-shader_param/scanlines_opacity = 0.272
+shader_param/scanlines_opacity = 0.081
 shader_param/scanlines_width = 0.108
 shader_param/grille_opacity = 0.0
 shader_param/resolution = Vector2( 640, 480 )
@@ -25,4 +25,4 @@ shader_param/discolor = true
 shader_param/warp_amount = 0.02
 shader_param/clip_warp = false
 shader_param/vignette_intensity = 0.4
-shader_param/vignette_opacity = 0.389
+shader_param/vignette_opacity = 0.197

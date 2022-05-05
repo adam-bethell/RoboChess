@@ -7,6 +7,7 @@ var is_human_player
 var health = 1
 var map_position = Vector2.ZERO
 var ai = null
+var player_tile = ""
 
 func _ready():
 	$Deck.connect("size_updated", $PlayerBoardUI, "set_deck_count")
@@ -20,8 +21,9 @@ func _ready():
 	$PlayerBoardUI/Mulligan.connect("mulligan", self, "_on_mulligan")
 	$PlayerBoardUI.set_health_val(health)
 	
-func setup(deck, _health, _map_position, matrix_x, matrix_y, _ai):
+func setup(deck, _health, _map_position, matrix_x, matrix_y, tile, _ai):
 	ai = _ai
+	player_tile = tile
 	if ai == null:
 		is_human_player = true
 	else:
@@ -31,7 +33,7 @@ func setup(deck, _health, _map_position, matrix_x, matrix_y, _ai):
 		ai.matrix = $Matrix
 		is_human_player = false
 		ai.connect("turn_calculated", self, "ai_process_turn_data")
-	$PlayerBoardUI.setup(is_human_player)
+	$PlayerBoardUI.setup(is_human_player, tile)
 	# Player Info
 	map_position = _map_position
 	health = _health
@@ -48,6 +50,12 @@ func setup(deck, _health, _map_position, matrix_x, matrix_y, _ai):
 		$Hand.add_prog($Deck.draw())
 		
 func draw_prog():
+	if $Deck.get_size() == 0:
+		for prog in $Heap.take_progs():
+			$Deck.add_prog(prog)
+		$Deck.shuffle()
+		damage()
+	
 	for _i in range($Hand.get_limit() - $Hand.get_size()):
 		$Hand.add_prog($Deck.draw())
 

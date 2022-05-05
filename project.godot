@@ -17,7 +17,7 @@ config/icon="res://icon.png"
 [autoload]
 
 Globals="*res://Scripts/Globals.gd"
-LevelData="*res://Data/LevelData.gd"
+CampaignData="*res://Data/CampaignData.gd"
 CardData="*res://Data/CardData.gd"
 UnitData="*res://Data/UnitData.gd"
 
@@ -27,9 +27,10 @@ gdscript/warnings/return_value_discarded=false
 
 [display]
 
-window/size/width=1536
-window/size/height=864
+window/size/width=1584
+window/size/height=960
 window/size/resizable=false
+mouse_cursor/custom_image="res://mouse_arrow.png"
 window/stretch/aspect="keep"
 window/stretch/shrink=3.0
 

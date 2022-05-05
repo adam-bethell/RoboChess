@@ -10,9 +10,11 @@ var current_mode = IDLE
 var mouse_follower_offset = Vector2.ZERO
 
 var is_human_player = false
+var player_tile
 onready var matrix_entries = [$MatrixEntry1, $MatrixEntry2, $MatrixEntry3]
 
-func setup (_is_human_player):
+func setup (_is_human_player, tile):
+	player_tile = tile
 	is_human_player = _is_human_player
 	if is_human_player:
 		$MatrixEntry1.connect("mouse_down", self, "pickup_prog")
@@ -56,36 +58,39 @@ func _val_to_string(val):
 	return text
 	
 func set_deck_count(val):
-	if not is_human_player:
-		return
-	var text = _val_to_string(val) 
-	set_cell(1,0,get_tileset().find_tile_by_name(text[0]))
-	set_cell(2,0,get_tileset().find_tile_by_name(text[1]))
+	var text = _val_to_string(val)
+	$Stats.set_cell(1,0,$Stats.get_tileset().find_tile_by_name("Background Light"))
+	$Stats.set_cell(2,0,$Stats.get_tileset().find_tile_by_name("Background Light"))
+	yield(get_tree().create_timer(0.2), "timeout")
+	$Stats.set_cell(1,0,$Stats.get_tileset().find_tile_by_name(text[0]))
+	$Stats.set_cell(2,0,$Stats.get_tileset().find_tile_by_name(text[1]))
 	
 func set_heap_count(val):
-	if not is_human_player:
-		return
 	var text = _val_to_string(val)
-	set_cell(5,0,get_tileset().find_tile_by_name(text[0]))
-	set_cell(6,0,get_tileset().find_tile_by_name(text[1]))
+	$Stats.set_cell(5,0,$Stats.get_tileset().find_tile_by_name("Background Light"))
+	$Stats.set_cell(6,0,$Stats.get_tileset().find_tile_by_name("Background Light"))
+	yield(get_tree().create_timer(0.2), "timeout")
+	$Stats.set_cell(5,0,$Stats.get_tileset().find_tile_by_name(text[0]))
+	$Stats.set_cell(6,0,$Stats.get_tileset().find_tile_by_name(text[1]))
 	
 func set_health_val(val):
-	if not is_human_player:
-		return
 	var text = _val_to_string(val)
-	set_cell(9,0,get_tileset().find_tile_by_name(text[0]))
-	set_cell(10,0,get_tileset().find_tile_by_name(text[1]))
+	$Stats.set_cell(9,0,$Stats.get_tileset().find_tile_by_name("Melee"))
+	$Stats.set_cell(10,0,$Stats.get_tileset().find_tile_by_name("Melee"))
+	yield(get_tree().create_timer(0.2), "timeout")
+	$Stats.set_cell(9,0,$Stats.get_tileset().find_tile_by_name(text[0]))
+	$Stats.set_cell(10,0,$Stats.get_tileset().find_tile_by_name(text[1]))
 
 func set_idle_mode():
 	$Mulligan.visible = false
-	$Board.visible = false
+	#$Board.visible = false
 	$Board.show_card_slots()
 	current_mode = IDLE
 	$RunIndicator.visible = false
 	
 func set_insert_mode():
 	$Mulligan.visible = true
-	$Board.visible = true
+	#$Board.visible = true
 	$Board.show_card_slots()
 	current_mode = INSERT
 	$RunIndicator.visible = false
@@ -158,6 +163,8 @@ func hide_hunan_player_ui():
 	clear()
 	$PlayerBackground.visible = false
 	$NonPlayerBackground.visible = true
-	transform.origin = transform.origin - Vector2(16, 16)
+	#transform.origin = transform.origin + Vector2(-16, -16)
+	$Stats.transform.origin = $Stats.transform.origin + Vector2(0, 80)
+	$Stats.set_cell(8,0,$Stats.get_tileset().find_tile_by_name(player_tile))
 	z_index = 2
 	visible = false
