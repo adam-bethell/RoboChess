@@ -21,11 +21,17 @@ func load_level(index):
 		debug_menu.queue_free()
 		debug_menu = null
 	
+	if CampaignData.levels[index]["intro_scene"] != "":
+		add_child(load(CampaignData.levels[index]["intro_scene"]).instance())
 	current_level = Level.instance()
 	add_child(current_level)
 	var level_data = load(CampaignData.levels[index]["map_data"]).instance()
 	
 	var card_names = []
+	card_names.push_back("Rotate CW")
+	card_names.push_back(8)
+	card_names.push_back("Rotate ACW")
+	card_names.push_back(8)
 	card_names.push_back("Move North")
 	card_names.push_back(8)
 	card_names.push_back("Move South")

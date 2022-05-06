@@ -18,7 +18,7 @@ func display_info (info_owner, info_text):
 		
 		var cell = Vector2(1, 0)
 		for word in info_text.split(" ", false):
-			var space_remaining = 18 - cell.x
+			var space_remaining = 19 - cell.x
 			if word.length() > space_remaining:
 				cell.x = 1
 				cell.y += 1

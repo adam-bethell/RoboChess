@@ -1,5 +1,7 @@
 extends Node2D
 
+# Signal used by child classes
+# warning-ignore:unused_signal
 signal turn_calculated
 
 var map = null

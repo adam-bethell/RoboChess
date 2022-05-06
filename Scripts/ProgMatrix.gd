@@ -20,7 +20,37 @@ func setup(x, y):
 	for x in range(width):
 		for y in range(height):
 			matrix[x][y] = null
+
+func start_insert_phase():
+	var progs_to_spin_cw = []
+	var progs_to_spin_acw = []
+	
+	for x in range(width):
+		for y in range(height):
+			var prog = matrix[x][y]
+			if prog == null:
+				continue
 			
+			if "spin cw" in prog.keywords:
+				var position = Vector2(x,y)
+				var spin_dir = prog.spin_as_move_vector()
+				var affected_pos = position + spin_dir
+				if _is_valid_matrix_position(affected_pos) && matrix[affected_pos.x][affected_pos.y] != null:
+					progs_to_spin_cw.push_back(matrix[affected_pos.x][affected_pos.y])
+				progs_to_spin_cw.push_back(prog)
+			elif "spin acw" in prog.keywords:
+				var position = Vector2(x,y)
+				var spin_dir = prog.spin_as_move_vector()
+				var affected_pos = position + spin_dir
+				if _is_valid_matrix_position(affected_pos) && matrix[affected_pos.x][affected_pos.y] != null:
+					progs_to_spin_acw.push_back(matrix[affected_pos.x][affected_pos.y])
+				progs_to_spin_acw.push_back(prog)
+				
+	for prog in progs_to_spin_cw:
+		prog.spin_cw()
+	for prog in progs_to_spin_acw:
+		prog.spin_acw()
+
 func clone():
 	var clone = self.duplicate(7)
 	clone.width = width
@@ -90,15 +120,21 @@ func get_run(insert_point: Vector2):
 	var position = get_insert_start(insert_point)
 	
 	var progs = []
-	while position.x < width && position.x >= 0 && position.y < height && position.y >= 0:
+	while _is_valid_matrix_position(position):
 		var prog = matrix[position.x][position.y]
 		if prog != null:
 			progs.push_back(prog)
 			if "stop" in prog.keywords:
 				break
+				
 		position = position + movement
 	
 	return progs
+
+func _is_valid_matrix_position(position):
+	if position.x < width && position.x >= 0 && position.y < height && position.y >= 0:
+		return true
+	return false
 	
 func run(insert_point: Vector2):
 	var progs = get_run(insert_point)
@@ -115,6 +151,7 @@ func get_insert_points():
 	return insert_points
 	
 func get_prog_count_by_type():
+# warning-ignore:unused_variable
 	var count_empty = 0
 	var count_move = 0
 	var count_attack = 0

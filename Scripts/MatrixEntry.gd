@@ -26,3 +26,6 @@ func show_card_slot():
 func show_run_start():
 	$CardSlot.visible = false
 	$RunStart.visible = true
+
+func set_rotation_degrees(degs):
+	$RunStart.rotation_degrees = degs

@@ -1,8 +1,7 @@
 extends Node
 
-enum Type {MOVE, ATTACK, DEBUFF}
-enum Direction {NORTH, SOUTH, EAST, WEST, ALL}
-enum Debuff {NOP, STP, DMG}
+enum Type {MOVE = 0, ATTACK, DEBUFF, SPECIAL}
+enum Direction {NORTH = 0, SOUTH, EAST, WEST, ALL}
 
 var card_data = {
 	"Move North": {
@@ -140,5 +139,21 @@ var card_data = {
 		"direction": null,
 		"distance": null,
 		"keywords": ["dmg"]
+	},
+	"Rotate CW": {
+		"description": "Turns card being pointed to then self clockwise",
+		"tiles": ["SP Rotator 1", "SP Rotator CW", "SP Rotator 2", "SP"],
+		"type": Type.SPECIAL,
+		"direction": null,
+		"distance": null,
+		"keywords": ["spin cw"]
+	},
+	"Rotate ACW": {
+		"description": "Turns card being pointed to then self anticlockwise",
+		"tiles": ["SP Rotator 1", "SP Rotator ACW", "SP Rotator 2", "SP"],
+		"type": Type.SPECIAL,
+		"direction": null,
+		"distance": null,
+		"keywords": ["spin acw"]
 	}
 } 

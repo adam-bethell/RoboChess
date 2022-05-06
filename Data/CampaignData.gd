@@ -5,7 +5,7 @@ var levels = [
 		"name": "Tutorial 1: Self Control",
 		"description": "Figure out the controls and defeat these chickens",
 		"map_data": "res://Data/Level_1.tscn",
-		"intro_scene": "",
+		"intro_scene": "res://Data/Level_1_intro.tscn",
 	},
 	{
 		"name": "Tutorial 2: Controlling Others",

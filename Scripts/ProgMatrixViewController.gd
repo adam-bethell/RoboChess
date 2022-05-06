@@ -18,6 +18,7 @@ func setup(progMatrix):
 			
 	for x in range(matrix.width):
 		var entry = MatrixEntry.instance()
+		entry.set_rotation_degrees(90)
 		entry.connect("mouse_entered", self, "_matrix_entry_mouse_entered")
 		entry.connect("mouse_exited", self, "_matrix_entry_mouse_exited")
 		entry.connect("mouse_down", self, "_matrix_entry_mouse_down")
@@ -26,6 +27,7 @@ func setup(progMatrix):
 		entry.transform.origin = coord_to_pos(x, -1)
 		
 		entry = MatrixEntry.instance()
+		entry.set_rotation_degrees(270)
 		entry.connect("mouse_entered", self, "_matrix_entry_mouse_entered")
 		entry.connect("mouse_exited", self, "_matrix_entry_mouse_exited")
 		entry.connect("mouse_down", self, "_matrix_entry_mouse_down")
@@ -35,6 +37,7 @@ func setup(progMatrix):
 	
 	for y in range(matrix.height):
 		var entry = MatrixEntry.instance()
+		entry.set_rotation_degrees(0)
 		entry.connect("mouse_entered", self, "_matrix_entry_mouse_entered")
 		entry.connect("mouse_exited", self, "_matrix_entry_mouse_exited")
 		entry.connect("mouse_down", self, "_matrix_entry_mouse_down")
@@ -43,6 +46,7 @@ func setup(progMatrix):
 		entry.transform.origin = coord_to_pos(-1, y)
 		
 		entry = MatrixEntry.instance()
+		entry.set_rotation_degrees(180)
 		entry.connect("mouse_entered", self, "_matrix_entry_mouse_entered")
 		entry.connect("mouse_exited", self, "_matrix_entry_mouse_exited")
 		entry.connect("mouse_down", self, "_matrix_entry_mouse_down")

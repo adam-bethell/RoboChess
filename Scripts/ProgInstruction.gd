@@ -5,6 +5,7 @@ var type
 var direction
 var distance
 var keywords
+var spin
 
 func setup(card_data):
 	description = card_data["description"]
@@ -13,24 +14,64 @@ func setup(card_data):
 	distance = card_data["distance"]
 	keywords = card_data["keywords"]
 	
+	if "spin cw" in keywords:
+		set_spin(randi() % 4)
+	else:
+		set_spin(CardData.Direction.NORTH)
+
 	var tiles = card_data["tiles"]
-	$TileMap.set_cell(0,0,$TileMap.get_tileset().find_tile_by_name(tiles[0]))
-	$TileMap.set_cell(1,0,$TileMap.get_tileset().find_tile_by_name(tiles[1]))
-	$TileMap.set_cell(0,1,$TileMap.get_tileset().find_tile_by_name(tiles[2]))
-	$TileMap.set_cell(1,1,$TileMap.get_tileset().find_tile_by_name(tiles[3]))
+	$TileMap.set_cell(-1,-1,$TileMap.get_tileset().find_tile_by_name(tiles[0]))
+	$TileMap.set_cell(0,-1,$TileMap.get_tileset().find_tile_by_name(tiles[1]))
+	$TileMap.set_cell(-1,0,$TileMap.get_tileset().find_tile_by_name(tiles[2]))
+	$TileMap.set_cell(0,0,$TileMap.get_tileset().find_tile_by_name(tiles[3]))
 	
 	$Area2D.connect("mouse_entered", self, "identify")
 	$Area2D.connect("mouse_exited", self, "clear_info")
-	
+
+func _calc_direction():
+	if direction == CardData.Direction.ALL:
+		return direction
+	elif spin == CardData.Direction.NORTH:
+		return direction
+	elif direction == CardData.Direction.NORTH:
+		return spin
+	elif spin == CardData.Direction.SOUTH:
+		if direction == CardData.Direction.SOUTH:
+			return CardData.Direction.NORTH
+		elif direction == CardData.Direction.EAST:
+			return CardData.Direction.WEST
+		elif direction == CardData.Direction.WEST:
+			return CardData.Direction.EAST
+	elif spin == CardData.Direction.EAST:
+		if direction == CardData.Direction.SOUTH:
+			return CardData.Direction.WEST
+		elif direction == CardData.Direction.EAST:
+			return CardData.Direction.SOUTH
+		elif direction == CardData.Direction.WEST:
+			return CardData.Direction.NORTH
+	elif spin == CardData.Direction.WEST:
+		if direction == CardData.Direction.SOUTH:
+			return CardData.Direction.EAST
+		elif direction == CardData.Direction.EAST:
+			return CardData.Direction.NORTH
+		elif direction == CardData.Direction.WEST:
+			return CardData.Direction.SOUTH
+
 func direction_as_move_vector():
+	return _dir_value_as_move_vector(_calc_direction())
+	
+func spin_as_move_vector():
+	return _dir_value_as_move_vector(spin)
+	
+func _dir_value_as_move_vector(dir):
 	var move_vector = Vector2.ZERO
-	if direction == CardData.Direction.NORTH:
+	if dir == CardData.Direction.NORTH:
 		move_vector = Vector2(0, -1)
-	elif direction == CardData.Direction.SOUTH:
+	elif dir == CardData.Direction.SOUTH:
 		move_vector = Vector2(0, 1)
-	elif direction == CardData.Direction.EAST:
+	elif dir == CardData.Direction.EAST:
 		move_vector = Vector2(1, 0)
-	elif direction == CardData.Direction.WEST:
+	elif dir == CardData.Direction.WEST:
 		move_vector = Vector2(-1, 0)
 	return move_vector
 	
@@ -38,15 +79,15 @@ func direction_as_attack_vectors():
 	var vectors = []
 
 	for i in range(1,distance+1):
-		if direction == CardData.Direction.NORTH:
+		if _calc_direction() == CardData.Direction.NORTH:
 			vectors.push_back(Vector2(0, i * -1))
-		elif direction == CardData.Direction.SOUTH:
+		elif _calc_direction() == CardData.Direction.SOUTH:
 			vectors.push_back(Vector2(0, i))
-		elif direction == CardData.Direction.EAST:
+		elif _calc_direction() == CardData.Direction.EAST:
 			vectors.push_back(Vector2(i, 0))
-		elif direction == CardData.Direction.WEST:
+		elif _calc_direction() == CardData.Direction.WEST:
 			vectors.push_back(Vector2(i * -1, 0))
-		elif direction == CardData.Direction.ALL:
+		elif _calc_direction() == CardData.Direction.ALL:
 			vectors.push_back(Vector2(0, i * -1))
 			vectors.push_back(Vector2(0, i))
 			vectors.push_back(Vector2(i, 0))
@@ -54,6 +95,37 @@ func direction_as_attack_vectors():
 
 	return vectors
 
+func set_spin(spin_dir):
+	spin = spin_dir
+	if spin == CardData.Direction.NORTH:
+		$TileMap.rotation_degrees = 0
+	elif spin == CardData.Direction.SOUTH:
+		$TileMap.rotation_degrees = 180
+	elif spin == CardData.Direction.EAST:
+		$TileMap.rotation_degrees = 90
+	elif spin == CardData.Direction.WEST:
+		$TileMap.rotation_degrees = 270
+		
+func spin_cw():
+	if spin == CardData.Direction.NORTH:
+		set_spin(CardData.Direction.EAST)
+	elif spin == CardData.Direction.SOUTH:
+		set_spin(CardData.Direction.WEST)
+	elif spin == CardData.Direction.EAST:
+		set_spin(CardData.Direction.SOUTH)
+	elif spin == CardData.Direction.WEST:
+		set_spin(CardData.Direction.NORTH)
+		
+func spin_acw():
+	if spin == CardData.Direction.NORTH:
+		set_spin(CardData.Direction.WEST)
+	elif spin == CardData.Direction.SOUTH:
+		set_spin(CardData.Direction.EAST)
+	elif spin == CardData.Direction.EAST:
+		set_spin(CardData.Direction.NORTH)
+	elif spin == CardData.Direction.WEST:
+		set_spin(CardData.Direction.SOUTH)
+		
 func identify():
 	Globals.emit_signal("info_bus", self, description)
 func clear_info():

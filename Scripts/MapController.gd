@@ -40,7 +40,7 @@ func run_progs(player, progs, skip_animations = false):
 		var player_tile_id = $TileMap.get_cellv(player.map_position)
 		assert(player_tile_id != -1)
 		var player_tile_name = $TileMap.get_tileset().tile_get_name(player_tile_id)
-		var attack_tile_name = UnitData.unit_data[player_tile_name]["attack_tile"]
+		var attack_tile_name = UnitData.find_unit_data_from_tile_name(player_tile_name)["attack_tile"]
 		
 		if prog.type == CardData.Type.MOVE:
 			var move_vector = prog.direction_as_move_vector()
@@ -71,7 +71,7 @@ func run_progs(player, progs, skip_animations = false):
 				if UnitData.is_unit_tile(player_tile):
 					emit_signal("player_hit", attack_position)
 		
-		elif prog.type == CardData.Type.DEBUFF:
+		else:
 			if "dmg" in prog.keywords:
 				if not skip_animations:
 					$Overlays.set_cellv(player.map_position, $Overlays.get_tileset().find_tile_by_name(attack_tile_name))

@@ -60,6 +60,7 @@ func draw_prog():
 		$Hand.add_prog($Deck.draw())
 
 func start_turn():
+	$Matrix.start_insert_phase()
 	if not is_human_player:
 		ai.calculate_turn()
 	else:

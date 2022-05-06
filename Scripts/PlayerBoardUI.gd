@@ -94,6 +94,7 @@ func set_insert_mode():
 	$Board.show_card_slots()
 	current_mode = INSERT
 	$RunIndicator.visible = false
+	$Board.update_tiles()
 
 func set_run_mode():
 	$Mulligan.visible = false
