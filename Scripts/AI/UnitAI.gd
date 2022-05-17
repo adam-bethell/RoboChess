@@ -50,6 +50,7 @@ func options_get():
 					"prog": prog,
 					"insert_target": player,
 					"insert_point": prog_insert_point,
+					"run_insert_point": run_insert_point,
 					"run": test_matrix.get_run(run_insert_point),
 					"dropped_prog": dropped_prog,
 					"prog_count_by_type": prog_count_by_type,
@@ -73,6 +74,7 @@ func options_get():
 					"prog": prog,
 					"insert_target": human_player,
 					"insert_point": prog_insert_point,
+					"run_insert_point": run_insert_point,
 					"run": matrix.get_run(run_insert_point),
 					"dropped_prog": dropped_prog,
 					"prog_count_by_type": prog_count_by_type,
@@ -116,7 +118,7 @@ func options_run(count):
 		var test_map = map.duplicate(4)
 		test_map.connect("player_hit", self, "test_map_hit_player")
 		setup_test_players()
-		test_map.run_progs(test_player, option["run"], true)
+		test_map.run_progs(test_player, option["run"])
 		
 		var distance = test_map.get_distance(test_player.map_position, test_human_player.map_position)
 		option["movement_towards_human"] = start_distance_from_human - distance

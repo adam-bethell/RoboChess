@@ -28,6 +28,10 @@ func load_level(index):
 	var level_data = load(CampaignData.levels[index]["map_data"]).instance()
 	
 	var card_names = []
+	card_names.push_back("Swap NS")
+	card_names.push_back(8)
+	card_names.push_back("Swap EW")
+	card_names.push_back(8)
 	card_names.push_back("Rotate CW")
 	card_names.push_back(8)
 	card_names.push_back("Rotate ACW")

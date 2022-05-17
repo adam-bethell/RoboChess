@@ -40,7 +40,7 @@ func setup_players(player_deck_data):
 			human_player = Player.instance()
 			add_child(human_player)
 			human_player.setup(construct_deck(player_deck_data), 6, data[1], 4, 4, data[0], null)
-			human_player.connect("run_progs", $Map, "run_progs")
+			human_player.connect("init_run", $Map, "init_run")
 			human_player.connect("player_died", $Map, "player_died")
 			human_player.connect("player_died", self, "_on_player_died")
 			break
@@ -64,7 +64,7 @@ func setup_players(player_deck_data):
 				data[0],
 				ai
 			)
-			player.connect("run_progs", $Map, "run_progs")
+			player.connect("init_run", $Map, "init_run")
 			player.connect("player_died", $Map, "player_died")
 			player.connect("player_died", self, "_on_player_died")
 
@@ -75,15 +75,6 @@ func setup_turn_order():
 	
 	current_player = turn_order.pop_front()
 	$TurnOrder.update_order(current_player, turn_order)
-	
-func get_chicken_test_deck():
-	var card_names = []
-	for _i in range(8):
-		card_names.push_back("Move North")
-		card_names.push_back("Move South")
-		card_names.push_back("Move East")
-		card_names.push_back("Move West")
-	return construct_deck(card_names)
 
 func construct_deck(card_names):
 	var deck = []

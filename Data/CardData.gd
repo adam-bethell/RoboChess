@@ -155,5 +155,21 @@ var card_data = {
 		"direction": null,
 		"distance": null,
 		"keywords": ["spin acw"]
+	},
+	"Swap NS": {
+		"description": "Swaps cards in the positions being pointed to",
+		"tiles": ["SP Swap Loop", "SP Swap North", "SP Swap South", "SP"],
+		"type": Type.SPECIAL,
+		"direction": null,
+		"distance": null,
+		"keywords": ["swap ns"]
+	},
+	"Swap EW": {
+		"description": "Swaps cards in the positions being pointed to",
+		"tiles": ["SP Swap Loop", "SP Swap East", "SP Swap West", "SP"],
+		"type": Type.SPECIAL,
+		"direction": null,
+		"distance": null,
+		"keywords": ["swap ew"]
 	}
 } 

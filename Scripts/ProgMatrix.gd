@@ -1,11 +1,17 @@
 extends Node
 
 signal prog_dropped
-signal run_progs
+signal init_run
+signal matrix_updated
 
 var width: int
 var height: int
 var matrix: Array
+
+var run_movement: Vector2
+var run_position: Vector2
+var run_prog = null
+var run_ended = true
 
 func setup(x, y):
 	width = x
@@ -22,34 +28,69 @@ func setup(x, y):
 			matrix[x][y] = null
 
 func start_insert_phase():
-	var progs_to_spin_cw = []
-	var progs_to_spin_acw = []
+	pass
 	
-	for x in range(width):
-		for y in range(height):
-			var prog = matrix[x][y]
-			if prog == null:
-				continue
-			
-			if "spin cw" in prog.keywords:
-				var position = Vector2(x,y)
-				var spin_dir = prog.spin_as_move_vector()
-				var affected_pos = position + spin_dir
-				if _is_valid_matrix_position(affected_pos) && matrix[affected_pos.x][affected_pos.y] != null:
-					progs_to_spin_cw.push_back(matrix[affected_pos.x][affected_pos.y])
-				progs_to_spin_cw.push_back(prog)
-			elif "spin acw" in prog.keywords:
-				var position = Vector2(x,y)
-				var spin_dir = prog.spin_as_move_vector()
-				var affected_pos = position + spin_dir
-				if _is_valid_matrix_position(affected_pos) && matrix[affected_pos.x][affected_pos.y] != null:
-					progs_to_spin_acw.push_back(matrix[affected_pos.x][affected_pos.y])
-				progs_to_spin_acw.push_back(prog)
-				
-	for prog in progs_to_spin_cw:
+func activate_prog(prog):
+	var position = get_position(prog)
+	assert(position != null)
+	
+	if "spin cw" in prog.keywords:
+		var spin_dir = prog.spin_as_move_vector()
+		var affected_pos = position + spin_dir
+		if _is_valid_matrix_position(affected_pos) && matrix[affected_pos.x][affected_pos.y] != null:
+			matrix[affected_pos.x][affected_pos.y].spin_cw()
 		prog.spin_cw()
-	for prog in progs_to_spin_acw:
+	elif "spin acw" in prog.keywords:
+		var spin_dir = prog.spin_as_move_vector()
+		var affected_pos = position + spin_dir
+		if _is_valid_matrix_position(affected_pos) && matrix[affected_pos.x][affected_pos.y] != null:
+			matrix[affected_pos.x][affected_pos.y].spin_acw()
 		prog.spin_acw()
+	
+	if "swap ns" in prog.keywords || "swap ew" in prog.keywords:
+		var swap_dir_1 = prog.direction_plus_spin(CardData.Direction.NORTH, prog.spin)
+		var swap_dir_2 = prog.direction_plus_spin(CardData.Direction.SOUTH, prog.spin)
+		if "swap ew" in prog.keywords:
+			swap_dir_1 = prog.direction_plus_spin(swap_dir_1, CardData.Direction.EAST)
+			swap_dir_2 = prog.direction_plus_spin(swap_dir_2, CardData.Direction.EAST)
+		var swap_target_1 = position + prog.dir_value_as_move_vector(swap_dir_1)
+		var swap_target_2 = position + prog.dir_value_as_move_vector(swap_dir_2)
+		var swap_cell_1 = null
+		var swap_cell_2 = null
+		var swap_prog_1 = null
+		var swap_prog_2 = null
+		
+		if _is_valid_matrix_position(swap_target_1):
+			print("swap target 1 is valid")
+			swap_cell_1 = swap_target_1
+			if matrix[swap_cell_1.x][swap_cell_1.y] != null:
+				print("swap cell 1 has prog")
+				swap_prog_1 = matrix[swap_cell_1.x][swap_cell_1.y]
+				matrix[swap_cell_1.x][swap_cell_1.y] = null
+			
+		if _is_valid_matrix_position(swap_target_2):
+			print("swap target 2 is valid")
+			swap_cell_2 = swap_target_2
+			if matrix[swap_cell_2.x][swap_cell_2.y] != null:
+				print("swap cell 2 has prog")
+				swap_prog_2 = matrix[swap_cell_2.x][swap_cell_2.y]
+				matrix[swap_cell_2.x][swap_cell_2.y] = null
+		
+		if swap_prog_1 != null:
+			if swap_cell_2 == null:
+				print ("swap prog 1 dropped")
+				emit_signal("prog_dropped", swap_prog_1)
+			else:
+				print ("swap prog 1 swapped")
+				matrix[swap_cell_2.x][swap_cell_2.y] = swap_prog_1
+				
+		if swap_prog_2 != null:
+			if swap_cell_1 == null:
+				print ("swap prog 2 dropped")
+				emit_signal("prog_dropped", swap_prog_2)
+			else:
+				print ("swap prog 2 swapped")
+				matrix[swap_cell_1.x][swap_cell_1.y] = swap_prog_2
 
 func clone():
 	var clone = self.duplicate(7)
@@ -65,6 +106,13 @@ func set_instruction (x: int, y: int, instruction):
 func get_instruction (x: int, y: int):
 	assert(x < width && x >= 0 && y < height && y >= 0)
 	return matrix[x][y]
+
+func get_position(prog):
+	for x in range(width):
+		for y in range(height):
+			if matrix[x][y] == prog:
+				return Vector2(x,y)
+	return null
 
 func get_insert_movement(insert_point):
 	var movement = null
@@ -114,31 +162,51 @@ func insert_prog (new_prog, insert_point: Vector2):
 		emit_signal("prog_dropped", displaced_prog)
 		return displaced_prog
 	return null
-		
-func get_run(insert_point: Vector2):
-	var movement = get_insert_movement(insert_point)
-	var position = get_insert_start(insert_point)
-	
-	var progs = []
-	while _is_valid_matrix_position(position):
-		var prog = matrix[position.x][position.y]
-		if prog != null:
-			progs.push_back(prog)
-			if "stop" in prog.keywords:
-				break
-				
-		position = position + movement
-	
-	return progs
 
 func _is_valid_matrix_position(position):
 	if position.x < width && position.x >= 0 && position.y < height && position.y >= 0:
 		return true
 	return false
 	
-func run(insert_point: Vector2):
-	var progs = get_run(insert_point)
-	emit_signal("run_progs", progs)
+func init_run(insert_point: Vector2):
+	run_movement = get_insert_movement(insert_point)
+	run_position = insert_point
+	run_prog = null
+	run_ended = false
+	emit_signal("init_run")
+
+func next_prog():
+	run_position += run_movement
+	
+	if not _is_valid_matrix_position(run_position):
+		run_ended = true
+		emit_signal("matrix_updated")
+		return null
+	
+	var prog = matrix[run_position.x][run_position.y]
+	if prog != null:
+		activate_prog(prog)
+		if "stop" in prog.keywords:
+			run_ended = true
+	emit_signal("matrix_updated")
+	return prog
+	
+func is_end_of_run():
+	return run_ended
+	
+func get_run(insert_point: Vector2):
+	run_movement = get_insert_movement(insert_point)
+	run_position = insert_point
+	run_prog = null
+	run_ended = false
+	
+	var progs = []
+	var prog = next_prog()
+	while not is_end_of_run():
+		if prog != null:
+			progs.push_back(prog)
+		prog = next_prog()
+	return progs
 	
 func get_insert_points():
 	var insert_points = []

@@ -1,5 +1,6 @@
 extends Node2D
 
+signal init_run
 signal run_progs
 signal player_died
 
@@ -15,7 +16,8 @@ func _ready():
 	$Hand.connect("prog_added", $PlayerBoardUI, "add_to_hand")
 	$Hand.connect("prog_removed", self, "draw_prog")
 	$Matrix.connect("prog_dropped", $Heap, "add_to_heap")
-	$Matrix.connect("run_progs", self, "run_progs")
+	$Matrix.connect("init_run", self, "init_run")
+	$Matrix.connect("matrix_updated", $PlayerBoardUI/Board, "update_tiles")
 	$PlayerBoardUI.connect("prog_played_from_hand", $Hand, "remove_prog")
 	$PlayerBoardUI.connect("prog_played_from_hand", self, "prog_played")
 	$PlayerBoardUI/Mulligan.connect("mulligan", self, "_on_mulligan")
@@ -71,7 +73,7 @@ func ai_process_turn_data(data):
 		$Hand.remove_prog(data["prog"])
 		$PlayerBoardUI.remove_from_hand(data["prog"])
 		data["insert_target"].insert_progv(data["prog"], data["insert_point"])
-	emit_signal("run_progs", self, data["run"])
+	$Matrix.init_run(data["run_insert_point"])
 	
 func insert_progv(prog, insert_point):
 	$PlayerBoardUI/Board.insert_progv(prog, insert_point)
@@ -80,9 +82,9 @@ func prog_played(_prog):
 	if is_human_player:
 		$PlayerBoardUI.set_run_mode()
 
-func run_progs(progs):
+func init_run():
 	$PlayerBoardUI.set_idle_mode()
-	emit_signal("run_progs", self, progs)
+	emit_signal("init_run", self)
 	
 func _on_mulligan():
 	for prog in $Hand.hand.duplicate():
@@ -90,7 +92,7 @@ func _on_mulligan():
 		$Hand.remove_prog(prog)
 		$Heap.add_to_heap(prog)
 	$PlayerBoardUI.set_idle_mode()
-	emit_signal("run_progs", self, [])
+	$Matrix.init_run(Vector2(-5, -5))
 	
 func set_ui_visibility(val):
 	$PlayerBoardUI.visible = val

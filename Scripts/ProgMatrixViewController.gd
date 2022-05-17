@@ -6,6 +6,7 @@ signal matrix_entry_mouse_down
 
 var MatrixEntry = preload("res://MatrixEntry.tscn")
 var MatrixBlankPrefab = preload("res://MatrixBlank.tscn")
+var MatrixProgHighlight = preload("res://MatrixProgHighlight.tscn")
 
 var matrix = null
 var matrixProgs = []
@@ -67,6 +68,13 @@ func update_tiles():
 			add_child(prog)
 			matrixProgs.push_back(prog)
 			prog.transform.origin = coord_to_pos(x,y)
+			
+			if not matrix.is_end_of_run() && matrix.run_position == Vector2(x,y):
+				var highlight = MatrixProgHighlight.instance()
+				add_child(highlight)
+				matrixProgs.push_back(highlight)
+				highlight.transform.origin = coord_to_pos(x,y)
+				
 
 func show_card_slots():
 	for entry in matrixEntries:
@@ -101,4 +109,4 @@ func insert_progv(prog, insert_point):
 
 func run(matrixEntry):
 	var insert_point = pos_to_coord(matrixEntry.transform.origin.x, matrixEntry.transform.origin.y)
-	matrix.run(insert_point)
+	matrix.init_run(insert_point)

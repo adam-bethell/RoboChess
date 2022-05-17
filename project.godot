@@ -27,12 +27,12 @@ gdscript/warnings/return_value_discarded=false
 
 [display]
 
-window/size/width=1584
-window/size/height=960
-window/size/resizable=false
+window/size/width=1056
+window/size/height=640
 mouse_cursor/custom_image="res://mouse_arrow.png"
+window/stretch/mode="viewport"
 window/stretch/aspect="keep"
-window/stretch/shrink=3.0
+window/stretch/shrink=2.0
 
 [input]
 

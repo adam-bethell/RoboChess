@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://tilemap.tres" type="TileSet" id=1]
+
+[node name="MatrixProgHighlight" type="TileMap"]
+position = Vector2( 32, 96 )
+z_index = 5
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 16, 16 )
+format = 1
+tile_data = PoolIntArray( 0, 126, 0 )

@@ -29,41 +29,44 @@ func setup(card_data):
 	$Area2D.connect("mouse_exited", self, "clear_info")
 
 func _calc_direction():
-	if direction == CardData.Direction.ALL:
-		return direction
-	elif spin == CardData.Direction.NORTH:
-		return direction
-	elif direction == CardData.Direction.NORTH:
-		return spin
-	elif spin == CardData.Direction.SOUTH:
-		if direction == CardData.Direction.SOUTH:
+	return direction_plus_spin(direction, spin)
+
+func direction_plus_spin(d, s):
+	if d == CardData.Direction.ALL:
+		return d
+	elif s == CardData.Direction.NORTH:
+		return d
+	elif d == CardData.Direction.NORTH:
+		return s
+	elif s == CardData.Direction.SOUTH:
+		if d == CardData.Direction.SOUTH:
 			return CardData.Direction.NORTH
-		elif direction == CardData.Direction.EAST:
+		elif d == CardData.Direction.EAST:
 			return CardData.Direction.WEST
-		elif direction == CardData.Direction.WEST:
+		elif d == CardData.Direction.WEST:
 			return CardData.Direction.EAST
-	elif spin == CardData.Direction.EAST:
-		if direction == CardData.Direction.SOUTH:
+	elif s == CardData.Direction.EAST:
+		if d == CardData.Direction.SOUTH:
 			return CardData.Direction.WEST
-		elif direction == CardData.Direction.EAST:
+		elif d == CardData.Direction.EAST:
 			return CardData.Direction.SOUTH
-		elif direction == CardData.Direction.WEST:
+		elif d == CardData.Direction.WEST:
 			return CardData.Direction.NORTH
-	elif spin == CardData.Direction.WEST:
-		if direction == CardData.Direction.SOUTH:
+	elif s == CardData.Direction.WEST:
+		if d == CardData.Direction.SOUTH:
 			return CardData.Direction.EAST
-		elif direction == CardData.Direction.EAST:
+		elif d == CardData.Direction.EAST:
 			return CardData.Direction.NORTH
-		elif direction == CardData.Direction.WEST:
+		elif d == CardData.Direction.WEST:
 			return CardData.Direction.SOUTH
 
 func direction_as_move_vector():
-	return _dir_value_as_move_vector(_calc_direction())
+	return dir_value_as_move_vector(_calc_direction())
 	
 func spin_as_move_vector():
-	return _dir_value_as_move_vector(spin)
+	return dir_value_as_move_vector(spin)
 	
-func _dir_value_as_move_vector(dir):
+func dir_value_as_move_vector(dir):
 	var move_vector = Vector2.ZERO
 	if dir == CardData.Direction.NORTH:
 		move_vector = Vector2(0, -1)
