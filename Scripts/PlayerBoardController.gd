@@ -74,6 +74,7 @@ func ai_process_turn_data(data):
 		$PlayerBoardUI.remove_from_hand(data["prog"])
 		data["insert_target"].insert_progv(data["prog"], data["insert_point"])
 	$Matrix.init_run(data["run_insert_point"])
+	$PlayerBoardUI.set_insert_mode()
 	
 func insert_progv(prog, insert_point):
 	$PlayerBoardUI/Board.insert_progv(prog, insert_point)

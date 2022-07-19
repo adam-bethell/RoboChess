@@ -14,7 +14,7 @@ func setup(card_data):
 	distance = card_data["distance"]
 	keywords = card_data["keywords"]
 	
-	if "spin cw" in keywords:
+	if "spin cw" in keywords || "spin acw" in keywords:
 		set_spin(randi() % 4)
 	else:
 		set_spin(CardData.Direction.NORTH)

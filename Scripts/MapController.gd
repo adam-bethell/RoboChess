@@ -37,7 +37,6 @@ func run_progs(player, progs):
 		var player_tile_id = $TileMap.get_cellv(player.map_position)
 		assert(player_tile_id != -1)
 		var player_tile_name = $TileMap.get_tileset().tile_get_name(player_tile_id)
-		var attack_tile_name = UnitData.find_unit_data_from_tile_name(player_tile_name)["attack_tile"]
 		
 		if prog.type == CardData.Type.MOVE:
 			var move_vector = prog.direction_as_move_vector()
@@ -67,7 +66,13 @@ func run_progs(player, progs):
 	emit_signal("run_progs_finished")
 	
 func init_run(player):
-	emit_signal("player_clicked", player.map_position)
+	if Settings.show_enemy_matracies:
+		emit_signal("player_clicked", player.map_position)
+	
+	var animation_speed = Settings.enemy_turn_speed
+	if player.is_human_player:
+		animation_speed = Settings.player_turn_speed
+		
 	var matrix = player.get_matrix()
 	var prog = matrix.next_prog()
 	while not matrix.is_end_of_run():
@@ -84,7 +89,7 @@ func init_run(player):
 					$TileMap.set_cellv(player.map_position, -1)
 					player.map_position = new_position
 					$TileMap.set_cellv(player.map_position, player_tile_id)
-					yield(get_tree().create_timer(0.4), "timeout")
+				yield(get_tree().create_timer(0.4 * animation_speed), "timeout")
 						
 			elif prog.type == CardData.Type.ATTACK:
 				var attack_vectors = prog.direction_as_attack_vectors()
@@ -92,9 +97,9 @@ func init_run(player):
 					var attack_position = player.map_position + vector
 					
 					$Overlays.set_cellv(attack_position, $Overlays.get_tileset().find_tile_by_name(attack_tile_name))
-					yield(get_tree().create_timer(0.2), "timeout")
+					yield(get_tree().create_timer(0.2 * animation_speed), "timeout")
 					$Overlays.set_cellv(attack_position, -1)
-					yield(get_tree().create_timer(0.2), "timeout")
+					yield(get_tree().create_timer(0.2 * animation_speed), "timeout")
 					
 					var tile_id = $TileMap.get_cellv(attack_position)
 					if tile_id == -1:
@@ -107,17 +112,18 @@ func init_run(player):
 			else:
 				if "dmg" in prog.keywords:
 					$Overlays.set_cellv(player.map_position, $Overlays.get_tileset().find_tile_by_name(attack_tile_name))
-					yield(get_tree().create_timer(0.2), "timeout")
+					yield(get_tree().create_timer(0.2 * animation_speed), "timeout")
 					$Overlays.set_cellv(player.map_position, -1)
-					yield(get_tree().create_timer(0.2), "timeout")
+					yield(get_tree().create_timer(0.2 * animation_speed), "timeout")
 					emit_signal("player_hit", player.map_position)
 				else:
-					yield(get_tree().create_timer(0.4), "timeout")
+					yield(get_tree().create_timer(0.4 * animation_speed), "timeout")
 		else:
-			yield(get_tree().create_timer(0.4), "timeout")
+			yield(get_tree().create_timer(0.4 * animation_speed), "timeout")
 		prog = matrix.next_prog()
 		
-	emit_signal("map_clicked")
+	if Settings.show_enemy_matracies:
+		emit_signal("map_clicked")
 	emit_signal("run_progs_finished")
 
 func player_died(player):

@@ -63,6 +63,8 @@ func game_over():
 	
 func level_complete():
 	current_level_index = current_level_index + 1
+	if current_level_index >= CampaignData.levels.size():
+		current_level_index = 0
 	load_level(current_level_index)
 	
 func _process(_delta):

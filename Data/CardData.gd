@@ -5,6 +5,7 @@ enum Direction {NORTH = 0, SOUTH, EAST, WEST, ALL}
 
 var card_data = {
 	"Move North": {
+		"name": "Move North",
 		"description": "MOVE 1 SPACE IN THE DIRECTION OF THE ARROW",
 		"tiles": ["Move North", "Move Corner", "Move ID 1", "Move ID 2"],
 		"type": Type.MOVE,
@@ -13,6 +14,7 @@ var card_data = {
 		"keywords": []
 	},
 	"Move South": {
+		"name": "Move South",
 		"description": "MOVE 1 SPACE IN THE DIRECTION OF THE ARROW",
 		"tiles": ["Move South", "Move Corner", "Move ID 1", "Move ID 2"],
 		"type": Type.MOVE,
@@ -21,6 +23,7 @@ var card_data = {
 		"keywords": []
 	},
 	"Move East": {
+		"name": "Move East",
 		"description": "MOVE 1 SPACE IN THE DIRECTION OF THE ARROW",
 		"tiles": ["Move East", "Move Corner", "Move ID 1", "Move ID 2"],
 		"type": Type.MOVE,
@@ -29,6 +32,7 @@ var card_data = {
 		"keywords": []
 	},
 	"Move West": {
+		"name": "Move West",
 		"description": "MOVE 1 SPACE IN THE DIRECTION OF THE ARROW",
 		"tiles": ["Move West", "Move Corner", "Move ID 1", "Move ID 2"],
 		"type": Type.MOVE,
@@ -37,6 +41,7 @@ var card_data = {
 		"keywords": []
 	},
 	"Attack North 1": {
+		"name": "Attack North 1",
 		"description": "ATTACK 1 SPACE IN THE DIRECTION OF THE ARROW",
 		"tiles": ["Attack North", "Attack Distance 1", "Attack ID 1", "Attack ID 2"],
 		"type": Type.ATTACK,
@@ -45,6 +50,7 @@ var card_data = {
 		"keywords": []
 	},
 	"Attack North 2": {
+		"name": "Attack North 2",
 		"description": "ATTACK 2 SPACES IN THE DIRECTION OF THE ARROW",
 		"tiles": ["Attack North", "Attack Distance 2", "Attack ID 1", "Attack ID 2"],
 		"type": Type.ATTACK,
@@ -53,6 +59,7 @@ var card_data = {
 		"keywords": []
 	},
 	"Attack South 1": {
+		"name": "Attack South 1",
 		"description": "ATTACK 1 SPACE IN THE DIRECTION OF THE ARROW",
 		"tiles": ["Attack South", "Attack Distance 1", "Attack ID 1", "Attack ID 2"],
 		"type": Type.ATTACK,
@@ -61,6 +68,7 @@ var card_data = {
 		"keywords": []
 	},
 	"Attack South 2": {
+		"name": "Attack South 2",
 		"description": "ATTACK 2 SPACES IN THE DIRECTION OF THE ARROW",
 		"tiles": ["Attack South", "Attack Distance 2", "Attack ID 1", "Attack ID 2"],
 		"type": Type.ATTACK,
@@ -69,6 +77,7 @@ var card_data = {
 		"keywords": []
 	},
 	"Attack East 1": {
+		"name": "Attack East 1",
 		"description": "ATTACK 1 SPACE IN THE DIRECTION OF THE ARROW",
 		"tiles": ["Attack East", "Attack Distance 1", "Attack ID 1", "Attack ID 2"],
 		"type": Type.ATTACK,
@@ -77,6 +86,7 @@ var card_data = {
 		"keywords": []
 	},
 	"Attack East 2": {
+		"name": "Attack East 2",
 		"description": "ATTACK 2 SPACES IN THE DIRECTION OF THE ARROW",
 		"tiles": ["Attack East", "Attack Distance 2", "Attack ID 1", "Attack ID 2"],
 		"type": Type.ATTACK,
@@ -85,6 +95,7 @@ var card_data = {
 		"keywords": []
 	},
 	"Attack West 1": {
+		"name": "Attack West 1",
 		"description": "ATTACK 1 SPACE IN THE DIRECTION OF THE ARROW",
 		"tiles": ["Attack West", "Attack Distance 1", "Attack ID 1", "Attack ID 2"],
 		"type": Type.ATTACK,
@@ -93,6 +104,7 @@ var card_data = {
 		"keywords": []
 	},
 	"Attack West 2": {
+		"name": "Attack West 2",
 		"description": "ATTACK 2 SPACES IN THE DIRECTION OF THE ARROW",
 		"tiles": ["Attack West", "Attack Distance 2", "Attack ID 1", "Attack ID 2"],
 		"type": Type.ATTACK,
@@ -101,6 +113,7 @@ var card_data = {
 		"keywords": []
 	},
 	"Attack All 1": {
+		"name": "Attack All 1",
 		"description": "ATTACK 1 SPACE IN  ALL DIRECTIONS",
 		"tiles": ["Attack All", "Attack Distance 1", "Attack ID 1", "Attack ID 2"],
 		"type": Type.ATTACK,
@@ -109,6 +122,7 @@ var card_data = {
 		"keywords": []
 	},
 	"Attack All 2": {
+		"name": "Attack All 2",
 		"description": "ATTACK 2 SPACES IN ALL DIRECTIONS",
 		"tiles": ["Attack All", "Attack Distance 2", "Attack ID 1", "Attack ID 2"],
 		"type": Type.ATTACK,
@@ -117,6 +131,7 @@ var card_data = {
 		"keywords": []
 	},
 	"NOP": {
+		"name": "NOP",
 		"description": "DOES NOTHING. SAME AS AN EMPTY SPACE",
 		"tiles": ["Debuff NOP 1", "Debuff NOP 2", "Debuff ID 1", "Debuff ID 2"],
 		"type": Type.DEBUFF,
@@ -125,6 +140,7 @@ var card_data = {
 		"keywords": []
 	},
 	"STP": {
+		"name": "STP",
 		"description": "STOPS ANY CARDS AFTER IT FROM BEING EXECUTED",
 		"tiles": ["Debuff STP 1", "Debuff STP 2", "Debuff ID 1", "Debuff ID 2"],
 		"type": Type.DEBUFF,
@@ -133,6 +149,7 @@ var card_data = {
 		"keywords": ["stop"]
 	},
 	"DMG": {
+		"name": "DMG",
 		"description": "DOES 1 DAMAGE TO THE USER",
 		"tiles": ["Debuff DMG 1", "Debuff DMG 2", "Debuff ID 1", "Debuff ID 2"],
 		"type": Type.DEBUFF,
@@ -141,6 +158,7 @@ var card_data = {
 		"keywords": ["dmg"]
 	},
 	"Rotate CW": {
+		"name": "Rotate CW",
 		"description": "Turns card being pointed to then self clockwise",
 		"tiles": ["SP Rotator 1", "SP Rotator CW", "SP Rotator 2", "SP"],
 		"type": Type.SPECIAL,
@@ -149,6 +167,7 @@ var card_data = {
 		"keywords": ["spin cw"]
 	},
 	"Rotate ACW": {
+		"name": "Rotate ACW",
 		"description": "Turns card being pointed to then self anticlockwise",
 		"tiles": ["SP Rotator 1", "SP Rotator ACW", "SP Rotator 2", "SP"],
 		"type": Type.SPECIAL,
@@ -157,6 +176,7 @@ var card_data = {
 		"keywords": ["spin acw"]
 	},
 	"Swap NS": {
+		"name": "Swap NS",
 		"description": "Swaps cards in the positions being pointed to",
 		"tiles": ["SP Swap Loop", "SP Swap North", "SP Swap South", "SP"],
 		"type": Type.SPECIAL,
@@ -165,6 +185,7 @@ var card_data = {
 		"keywords": ["swap ns"]
 	},
 	"Swap EW": {
+		"name": "Swap EW",
 		"description": "Swaps cards in the positions being pointed to",
 		"tiles": ["SP Swap Loop", "SP Swap East", "SP Swap West", "SP"],
 		"type": Type.SPECIAL,

@@ -61,7 +61,7 @@ func options_get():
 				options.push_back(option)
 			
 			test_matrix.queue_free()
-			
+		yield(get_tree(),"idle_frame")
 		for prog_insert_point in human_player.get_matrix().get_insert_points():
 			var test_matrix = human_player.get_matrix().clone()
 			var dropped_prog = null
@@ -85,6 +85,7 @@ func options_get():
 				options.push_back(option)
 				
 			test_matrix.queue_free()
+		yield(get_tree(),"idle_frame")
 	
 	return options
 
