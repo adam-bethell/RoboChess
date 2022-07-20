@@ -115,15 +115,20 @@ func _on_turn_ended():
 	elif is_level_complete:
 		emit_signal("level_complete")
 	else:
+		var previous_player = current_player
 		turn_order.push_back(current_player)
 		current_player = turn_order.pop_front()
+		if previous_player.health <= 0:
+			_on_player_died(previous_player)
 		current_player.start_turn()
 		$TurnOrder.update_order(current_player, turn_order)
 
 func _on_player_died(player):
 	if player == human_player:
 		is_game_over = true
-	else:
+	elif player != current_player:
+		# Dying during your own turn causes all kinds of problems
+		# Instead check for death as part of _on_turn_ended()
 		enemy_players.erase(player)
 		turn_order.erase(player)
 		if enemy_players.empty():

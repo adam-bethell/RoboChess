@@ -6,7 +6,7 @@ var Prog = preload("res://ProgInstruction.tscn")
 var Counter = preload("res://CardCounter.tscn")
 
 var cards = []
-var counters = []
+var counters = {}
 
 func _ready():
 	var x = 0
@@ -23,7 +23,7 @@ func _ready():
 		counter.connect("count_updated", self, "_on_card_count_updated")
 		prog.add_child(counter)
 		counter.card_data = card
-		counters.push_back(counter)
+		counters[card_name] = counter
 		
 		prog.transform.origin = coord_to_pos(x, y)
 		x += 1
@@ -33,7 +33,7 @@ func _ready():
 		
 func set_deck(deck):
 	for card_name in deck:
-		pass
+		counters[card_name].set_count(deck[card_name])
 		
 func coord_to_pos (x, y) -> Vector2:
 	return Vector2(x*48,y*48)

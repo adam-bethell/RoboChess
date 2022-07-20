@@ -26,34 +26,8 @@ func load_level(index):
 	current_level = Level.instance()
 	add_child(current_level)
 	var level_data = load(CampaignData.levels[index]["map_data"]).instance()
-	
-	var card_names = []
-	card_names.push_back("Swap NS")
-	card_names.push_back(8)
-	card_names.push_back("Swap EW")
-	card_names.push_back(8)
-	card_names.push_back("Rotate CW")
-	card_names.push_back(8)
-	card_names.push_back("Rotate ACW")
-	card_names.push_back(8)
-	card_names.push_back("Move North")
-	card_names.push_back(8)
-	card_names.push_back("Move South")
-	card_names.push_back(8)
-	card_names.push_back("Move East")
-	card_names.push_back(8)
-	card_names.push_back("Move West")
-	card_names.push_back(8)
-	card_names.push_back("Attack North 2")
-	card_names.push_back(3)
-	card_names.push_back("Attack South 2")
-	card_names.push_back(3)
-	card_names.push_back("Attack East 2")
-	card_names.push_back(3)
-	card_names.push_back("Attack West 2")
-	card_names.push_back(3)
 		
-	current_level.setup(level_data, card_names)
+	current_level.setup(level_data, player_deck_to_list())
 	
 	current_level.connect("game_over", self, "game_over")
 	current_level.connect("level_complete", self, "level_complete")
@@ -77,4 +51,11 @@ func _process(_delta):
 			remove_child(debug_menu)
 			debug_menu.queue_free()
 			debug_menu = null
-		
+			
+func player_deck_to_list():
+	var card_list = []
+	for card_name in Globals.player_deck:
+		card_list.push_back(card_name)
+		card_list.push_back(Globals.player_deck[card_name])
+	return card_list
+	

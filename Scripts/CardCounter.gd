@@ -16,12 +16,18 @@ func _on_input_event(_viewport, event, _shape_idx):
 		count += 1
 	elif event.is_action("context") && event.is_pressed() && not event.is_echo():
 		count -= 1
+	else:
+		return
 			
-	if count > 16:
+	if count > 99:
 		count = 0
 	elif count < 0:
-		count = 16
+		count = 99
 		
+	_update_counter()
+
+func set_count(_count):
+	count = _count
 	_update_counter()
 
 func _val_to_string(val):

@@ -44,11 +44,10 @@ func set_deck(deck):
 	set_cell(23,1,get_tileset().find_tile_by_name(text[2]))
 	
 	text = _val_to_string(count_total)
-	set_cell(27,1,get_tileset().find_tile_by_name(text[0]))
-	set_cell(28,1,get_tileset().find_tile_by_name(text[1]))
-	set_cell(29,1,get_tileset().find_tile_by_name(text[2]))
+	set_cell(27,1,get_tileset().find_tile_by_name(text[1]))
+	set_cell(28,1,get_tileset().find_tile_by_name(text[2]))
 	
-	if count_mv > 99 || count_at > 99 || count_db > 99 || count_sp > 99:
+	if count_mv > 99 or count_at > 99 or count_db > 99 or count_sp > 99 or count_total > 99:
 		return false
 	return true
 			
