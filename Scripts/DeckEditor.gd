@@ -20,7 +20,6 @@ func _on_card_count_updated (card_data, count):
 		deck[card_data["name"]] = count
 		
 	var result = $Metrics.set_deck(deck)
-	print(result)
 	if not result:
 		deck[card_data["name"]] = original_count
 		$Metrics.set_deck(deck)
