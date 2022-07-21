@@ -192,5 +192,14 @@ var card_data = {
 		"direction": null,
 		"distance": null,
 		"keywords": ["swap ew"]
+	},
+	"Redirect": {
+		"name": "Redirect",
+		"description": "Changes the path taken across the cards",
+		"tiles": ["SP Redirect 1", "SP Redirect", "SP Redirect 2", "SP"],
+		"type": Type.SPECIAL,
+		"direction": null,
+		"distance": null,
+		"keywords": ["redirect"]
 	}
 } 
