@@ -203,6 +203,7 @@ func get_run(insert_point: Vector2):
 	run_position = insert_point
 	run_prog = null
 	run_ended = false
+	var counter = 0
 	
 	var progs = []
 	var prog = next_prog()
@@ -210,6 +211,10 @@ func get_run(insert_point: Vector2):
 		if prog != null:
 			progs.push_back(prog)
 		prog = next_prog()
+		
+		counter += 1
+		if counter > 20:
+			run_ended = true
 	return progs
 	
 func get_insert_points():
