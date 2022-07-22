@@ -198,7 +198,7 @@ var card_data = {
 		"description": "Changes the path taken across the cards",
 		"tiles": ["SP Redirect 1", "SP Redirect", "SP Redirect 2", "SP"],
 		"type": Type.SPECIAL,
-		"direction": null,
+		"direction": Direction.NORTH,
 		"distance": null,
 		"keywords": ["redirect"]
 	}

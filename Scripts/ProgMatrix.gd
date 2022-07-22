@@ -34,6 +34,12 @@ func activate_prog(prog):
 	var position = get_position(prog)
 	assert(position != null)
 	
+	if "stop" in prog.keywords:
+		run_ended = true
+	
+	if "redirect" in prog.keywords:
+		run_movement = prog.direction_as_move_vector()
+	
 	if "spin cw" in prog.keywords:
 		var spin_dir = prog.spin_as_move_vector()
 		var affected_pos = position + spin_dir
@@ -186,8 +192,6 @@ func next_prog():
 	var prog = matrix[run_position.x][run_position.y]
 	if prog != null:
 		activate_prog(prog)
-		if "stop" in prog.keywords:
-			run_ended = true
 	emit_signal("matrix_updated")
 	return prog
 	
