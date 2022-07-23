@@ -201,5 +201,14 @@ var card_data = {
 		"direction": Direction.NORTH,
 		"distance": null,
 		"keywords": ["redirect"]
+	},
+	"Heal": {
+		"name": "Heal",
+		"description": "Heal",
+		"tiles": ["CL 1 0", "CL Heal", "CL 0 0", "CL"],
+		"type": Type.SPECIAL,
+		"direction": Direction.NORTH,
+		"distance": null,
+		"keywords": [""]
 	}
 } 
