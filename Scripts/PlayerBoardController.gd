@@ -116,9 +116,11 @@ func get_matrix():
 	
 func _on_prog_dropped(prog):
 	if "on discard" in prog.keywords:
-		if prog.name == "Heal":
+		print("on discard")
+		if prog.card_name == "Heal":
+			print("Heal")
 			var value = clamp(prog.num_activations, 0, 4)
 			change_health(value)
-		elif prog.name == "Curse":
+		elif prog.card_name == "Curse":
 			var value = 4 - clamp(prog.num_activations, 0, 4)
 			change_health(-value)

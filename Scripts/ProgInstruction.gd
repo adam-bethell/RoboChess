@@ -1,5 +1,6 @@
 extends Node2D
 
+var card_name
 var description
 var type
 var direction
@@ -10,6 +11,7 @@ var tiles
 var num_activations setget num_activations_updated
 
 func setup(card_data):
+	card_name = card_data["name"]
 	description = card_data["description"]
 	type = card_data["type"]
 	direction = card_data["direction"]
@@ -143,15 +145,10 @@ func num_activations_updated(value):
 		var cell_id = $TileMap.get_cellv(v)
 		if cell_id != -1:
 			var name = $TileMap.get_tileset().tile_get_name(cell_id)
-			if not name.begins_with("CL"):
-				return
-			print(name)
-			if name.ends_with("[" + str(num_activations) + "]"):
-				print("found")
-				var new_name = name.replace("[" + str(num_activations) + "]", "[" + str(value) + "]")
-				print(new_name)
+			if name.ends_with("]"):
+				var new_name = name.erase(name.length() - 3, 3)
+				new_name = name + "[" + str(value) + "]"
 				var new_cell_id = $TileMap.get_tileset().find_tile_by_name(new_name)
-				print(new_cell_id)
 				if new_cell_id != -1:
 					$TileMap.set_cellv(v, new_cell_id)
 	num_activations = value

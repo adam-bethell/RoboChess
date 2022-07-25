@@ -11,6 +11,7 @@ var player_deck = {}
 
 func _ready():
 	player_deck["Heal"] = 10
+	player_deck["Curse"] = 10
 	return 
 	player_deck["Swap NS"] = 3
 	player_deck["Swap EW"] = 3

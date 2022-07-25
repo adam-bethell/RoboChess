@@ -95,7 +95,7 @@ func activate_prog(prog):
 				print ("swap prog 2 swapped")
 				matrix[swap_cell_1.x][swap_cell_1.y] = swap_prog_2
 	
-func drop_prog(prog):	
+func drop_prog(prog):
 	emit_signal("prog_dropped", prog)
 	
 func clone():
