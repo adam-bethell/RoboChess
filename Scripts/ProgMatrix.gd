@@ -34,6 +34,8 @@ func activate_prog(prog):
 	var position = get_position(prog)
 	assert(position != null)
 	
+	prog.num_activations += 1
+	
 	if "stop" in prog.keywords:
 		run_ended = true
 	
@@ -75,29 +77,27 @@ func activate_prog(prog):
 				matrix[swap_cell_1.x][swap_cell_1.y] = null
 			
 		if _is_valid_matrix_position(swap_target_2):
-			print("swap target 2 is valid")
 			swap_cell_2 = swap_target_2
 			if matrix[swap_cell_2.x][swap_cell_2.y] != null:
-				print("swap cell 2 has prog")
 				swap_prog_2 = matrix[swap_cell_2.x][swap_cell_2.y]
 				matrix[swap_cell_2.x][swap_cell_2.y] = null
 		
 		if swap_prog_1 != null:
 			if swap_cell_2 == null:
-				print ("swap prog 1 dropped")
-				emit_signal("prog_dropped", swap_prog_1)
+				drop_prog(swap_prog_1)
 			else:
-				print ("swap prog 1 swapped")
 				matrix[swap_cell_2.x][swap_cell_2.y] = swap_prog_1
 				
 		if swap_prog_2 != null:
 			if swap_cell_1 == null:
-				print ("swap prog 2 dropped")
-				emit_signal("prog_dropped", swap_prog_2)
+				drop_prog(swap_prog_2)
 			else:
 				print ("swap prog 2 swapped")
 				matrix[swap_cell_1.x][swap_cell_1.y] = swap_prog_2
-
+	
+func drop_prog(prog):	
+	emit_signal("prog_dropped", prog)
+	
 func clone():
 	var clone = self.duplicate(7)
 	clone.width = width
@@ -146,7 +146,9 @@ func get_insert_start(insert_point):
 		
 func insert_prog (new_prog, insert_point: Vector2):
 	assert(new_prog != null && insert_point != null)
-		
+	
+	new_prog.num_activations = 0
+	
 	var movement = get_insert_movement(insert_point)
 	var position = get_insert_start(insert_point)
 	
@@ -165,7 +167,7 @@ func insert_prog (new_prog, insert_point: Vector2):
 			break;
 			
 	if displaced_prog != null:
-		emit_signal("prog_dropped", displaced_prog)
+		drop_prog(displaced_prog)
 		return displaced_prog
 	return null
 

@@ -6,6 +6,8 @@ var direction
 var distance
 var keywords
 var spin
+var tiles
+var num_activations setget num_activations_updated
 
 func setup(card_data):
 	description = card_data["description"]
@@ -19,7 +21,7 @@ func setup(card_data):
 	else:
 		set_spin(CardData.Direction.NORTH)
 
-	var tiles = card_data["tiles"]
+	tiles = card_data["tiles"]
 	$TileMap.set_cell(-1,-1,$TileMap.get_tileset().find_tile_by_name(tiles[0]))
 	$TileMap.set_cell(0,-1,$TileMap.get_tileset().find_tile_by_name(tiles[1]))
 	$TileMap.set_cell(-1,0,$TileMap.get_tileset().find_tile_by_name(tiles[2]))
@@ -27,6 +29,8 @@ func setup(card_data):
 	
 	$Area2D.connect("mouse_entered", self, "identify")
 	$Area2D.connect("mouse_exited", self, "clear_info")
+	
+	num_activations = 0
 
 func _calc_direction():
 	return direction_plus_spin(direction, spin)
@@ -133,3 +137,21 @@ func identify():
 	Globals.emit_signal("info_bus", self, description)
 func clear_info():
 	Globals.emit_signal("info_bus", self, null)
+	
+func num_activations_updated(value):
+	for v in [Vector2(-1,-1), Vector2(0,-1), Vector2(-1,0), Vector2(0,0)]:
+		var cell_id = $TileMap.get_cellv(v)
+		if cell_id != -1:
+			var name = $TileMap.get_tileset().tile_get_name(cell_id)
+			if not name.begins_with("CL"):
+				return
+			print(name)
+			if name.ends_with("[" + str(num_activations) + "]"):
+				print("found")
+				var new_name = name.replace("[" + str(num_activations) + "]", "[" + str(value) + "]")
+				print(new_name)
+				var new_cell_id = $TileMap.get_tileset().find_tile_by_name(new_name)
+				print(new_cell_id)
+				if new_cell_id != -1:
+					$TileMap.set_cellv(v, new_cell_id)
+	num_activations = value

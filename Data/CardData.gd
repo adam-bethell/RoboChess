@@ -1,6 +1,6 @@
 extends Node
 
-enum Type {MOVE = 0, ATTACK, DEBUFF, SPECIAL}
+enum Type {MOVE = 0, ATTACK, DEBUFF, SPECIAL, CLOCK}
 enum Direction {NORTH = 0, SOUTH, EAST, WEST, ALL}
 
 var card_data = {
@@ -205,10 +205,19 @@ var card_data = {
 	"Heal": {
 		"name": "Heal",
 		"description": "Heal",
-		"tiles": ["CL 1 0", "CL Heal", "CL 0 0", "CL"],
-		"type": Type.SPECIAL,
-		"direction": Direction.NORTH,
+		"tiles": ["CL 1 [0]", "CL Heal", "CL 0 [0]", "CL"],
+		"type": Type.CLOCK,
+		"direction": null,
 		"distance": null,
-		"keywords": [""]
+		"keywords": ["on discard"]
+	},
+	"Curse": {
+		"name": "Curse",
+		"description": "Curse",
+		"tiles": ["CL 1 [0]", "CL Curse", "CL 0 [0]", "CL"],
+		"type": Type.CLOCK,
+		"direction": null,
+		"distance": null,
+		"keywords": ["on discard"]
 	}
 } 

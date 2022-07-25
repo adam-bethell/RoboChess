@@ -16,6 +16,7 @@ func _ready():
 	$Hand.connect("prog_added", $PlayerBoardUI, "add_to_hand")
 	$Hand.connect("prog_removed", self, "draw_prog")
 	$Matrix.connect("prog_dropped", $Heap, "add_to_heap")
+	$Matrix.connect("prog_dropped", self, "_on_prog_dropped")
 	$Matrix.connect("init_run", self, "init_run")
 	$Matrix.connect("matrix_updated", $PlayerBoardUI/Board, "update_tiles")
 	$PlayerBoardUI.connect("prog_played_from_hand", $Hand, "remove_prog")
@@ -102,10 +103,22 @@ func set_matrix_visibility(val):
 	$PlayerBoardUI/Board.visible = val
 
 func damage():
-	health = health - 1
+	change_health(-1)
+	
+func change_health(value):
+	health += value
 	$PlayerBoardUI.set_health_val(health)
 	if health == 0:
 		emit_signal("player_died", self)
 		
 func get_matrix():
 	return $Matrix
+	
+func _on_prog_dropped(prog):
+	if "on discard" in prog.keywords:
+		if prog.name == "Heal":
+			var value = clamp(prog.num_activations, 0, 4)
+			change_health(value)
+		elif prog.name == "Curse":
+			var value = 4 - clamp(prog.num_activations, 0, 4)
+			change_health(-value)

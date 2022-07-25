@@ -10,6 +10,8 @@ var mouse_follower_overider_owner = null
 var player_deck = {}
 
 func _ready():
+	player_deck["Heal"] = 10
+	return 
 	player_deck["Swap NS"] = 3
 	player_deck["Swap EW"] = 3
 	player_deck["Rotate CW"] = 3
